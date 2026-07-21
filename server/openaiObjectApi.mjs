@@ -265,8 +265,8 @@ function sendJson(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
-function publicError(error) {
-  if (error?.status === 401) return { status: 502, message: "The OpenAI API key was rejected. Check OPENAI_API_KEY and restart the server." };
+export function publicError(error) {
+  if (error?.status === 401) return { status: 502, message: "The OpenAI API key was rejected. Check the configured OPENAI_API_KEY." };
   if (error?.status === 429 && error?.code === "insufficient_quota") {
     return { status: 429, message: "The OpenAI API key is connected, but this project has no available API quota. Add billing or credits in the OpenAI project, then try again." };
   }
@@ -276,7 +276,7 @@ function publicError(error) {
   return { status: 502, message: error?.message || "OpenAI object generation failed." };
 }
 
-async function generateObject({ client, model, serviceTier, body }) {
+export async function generateObject({ client, model, serviceTier, body }) {
   if (!client) {
     throw Object.assign(new Error("OpenAI is not configured yet. Add OPENAI_API_KEY to .env.local and restart the server."), { statusCode: 503 });
   }
